@@ -1,3 +1,9 @@
+TestCommonJSVariableInESMTypeModule
+---------- /out.js ----------
+// entry.js
+module.exports = null;
+
+================================================================================
 TestExportTypeIssue379
 ---------- /out.js ----------
 // a.ts
@@ -30,6 +36,27 @@ var foo4 = 123;
 
 // entry.ts
 console.log(a_exports, b_exports, c_exports, d_exports);
+
+================================================================================
+TestTSCommonJSVariableInESMTypeModule
+---------- /out.js ----------
+// entry.ts
+module.exports = null;
+
+================================================================================
+TestTSConstEnumComments
+---------- /out.js ----------
+// foo.ts
+console.log({
+  "should have comments": [
+    1 /* %/* */,
+    1 /* %/* */
+  ],
+  "should not have comments": [
+    2,
+    2
+  ]
+});
 
 ================================================================================
 TestTSDeclareClass
@@ -527,6 +554,16 @@ function foo() {
 foo();
 
 ================================================================================
+TestTSImportEqualsBundle
+---------- /out.js ----------
+// entry.ts
+import { foo } from "pkg";
+var used = foo.used;
+export {
+  used
+};
+
+================================================================================
 TestTSImportEqualsEliminationTest
 ---------- /out.js ----------
 // entry.ts
@@ -537,6 +574,21 @@ var bar = c;
 export {
   bar
 };
+
+================================================================================
+TestTSImportEqualsTreeShakingFalse
+---------- /out.js ----------
+import { foo } from "pkg";
+const used = foo.used;
+const unused = foo.unused;
+export { used };
+
+================================================================================
+TestTSImportEqualsTreeShakingTrue
+---------- /out.js ----------
+import { foo } from "pkg";
+const used = foo.used;
+export { used };
 
 ================================================================================
 TestTSImportMissingUnusedES6
@@ -831,6 +883,43 @@ export var x;
 ((x2) => {
   x2.z = x2.y;
 })(x || (x = {}));
+
+================================================================================
+TestTSThisIsUndefinedWarning
+---------- /out/warning1.js ----------
+// warning1.ts
+var foo = void 0;
+export {
+  foo
+};
+
+---------- /out/warning2.js ----------
+// warning2.ts
+var foo = (void 0).foo;
+export {
+  foo
+};
+
+---------- /out/warning3.js ----------
+// warning3.ts
+var foo = void 0 ? (void 0).foo : null;
+export {
+  foo
+};
+
+---------- /out/silent1.js ----------
+// silent1.ts
+var foo = void 0;
+export {
+  foo
+};
+
+---------- /out/silent2.js ----------
+// silent2.ts
+var foo = void 0;
+export {
+  foo
+};
 
 ================================================================================
 TestTypeScriptDecoratorScopeIssue2147
@@ -1153,6 +1242,7 @@ TestTypeScriptDecoratorsKeepNames
 // entry.ts
 var Foo = class {
 };
+__name(Foo, "Foo");
 Foo = __decorateClass([
   decoratorMustComeAfterName
 ], Foo);
